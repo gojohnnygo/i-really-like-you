@@ -63,7 +63,8 @@ body {
 /* Supporting marketing content */
 .marketing {
   margin: 40px 0;
-  
+  opacity: 0;
+
   p + h4 {
     margin-top: 28px;
   }
@@ -134,25 +135,6 @@ body {
 .removed {
   display: none;
 }
-
-// * {
-//   margin: 0;
-// }
-// html, body {
-//   height: 100%;
-// }
-// .page-wrap {
-//   min-height: 100%;
-//   /* equal to footer height */
-//   margin-bottom: -50px; 
-// }
-// .page-wrap:after {
-//   content: "";
-//   display: block;
-// }
-// .footer, .page-wrap:after {
-//   height: 50px; 
-// }
 
 .center {
   text-align: center;

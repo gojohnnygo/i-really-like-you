@@ -6,84 +6,72 @@
   var recentEndpoint = "https://api.instagram.com/v1/users/self/media/recent/?";
   var mediaEndpoint = "https://api.instagram.com/v1/media/";
   var accessToken = "";
-
-  // 1042373039268229955_269685443
   
   var liked = {};
   liked.lookup = {};
   liked.sorted = [];
 
-  if (window.location.hash) {
-    accessToken = window.location.hash.substr(1);
+  var initMainElements = function() {
+    $("#overlay").modal("show");
+
     $(".marketing").toggleClass("removed");
     $(".main").toggleClass("removed");
     
+    $(".dashboard").toggleClass("removed").addClass("animated fadeIn");
     $(".header").addClass("animated fadeIn");
-    $(".main").addClass("animated fadeIn");
-    
-  } else {
-    window.location.hash = " ";
-    // $(".header").addClass("animated fadeOut");
-    $(".marketing").addClass("animated fadeIn");
   }
 
-  var getMedia = function(url, cb) {
+  var instagramRequest = function(url) {
+    console.log('instagramRequest');
+
+    return Promise.resolve(
+      $.ajax({
+        method: "GET",
+        dataType: "jsonp",
+        url: url
+      })
+    );
+  }
+
+  var getMedia = function(data) {
     console.log('getMedia');
 
-    return $.ajax({
-      method: "GET",
-      dataType: "jsonp",
-      url: url
-    })
-    .done(function(data) {
-      return cb(data);
-    })
-    .fail(function(err) {
-      console.log(err);
-      return err;
-    });
-  }
-
-  var likedCb = function(data) {
-    console.log('likedCb');
-
-    incrementLikedCount(data);
-
-    var nextUrl = data.pagination.next_url
-    
-    if (nextUrl) {
-      setTimeout(function() {
-        getMedia(nextUrl, likedCb);
-      }, 100);
-    } else {
-      sortLiked();
-      addLikedToDom();
-      recentEndpoint += accessToken;
-      getMedia(recentEndpoint, recentCb);
-    };
-  }
-
-  var recentCb = function(data) {
-    console.log('recentCb');
-
     var media = data.data;
-    var nextUrl = data.pagination.next_url
     
     var promisedMediaUrls = media.map(function(medium) {
       var mediumUrl = mediaEndpoint + medium.id + "/likes/?" + accessToken;
       
-      return getMedia(mediumUrl, incrementLikedBackCount);
+      return instagramRequest(mediumUrl);
     });
 
-    Promise.all(promisedMediaUrls)
-    .then(function() {
-      if (nextUrl) {
-        getMedia(nextUrl, recentCb);
-      } else {
-        console.log(liked)
-        $( '#fixed' ).fixedsticky();
-      }
+    return Promise.all(promisedMediaUrls)
+    .then(function(likers) {
+      likers.next_url = data.pagination.next_url;
+
+      return likers;
     })
+    .catch(function(err) {
+      console.log('catch err', err)
+      return err;
+    })
+  }
+
+  var incrementLikedBackCount = function(data) {
+    console.log("incrementLikedBackCount");
+
+    data.forEach(function(photo) {
+      photo.data.forEach(function(liker) {
+        if (liked.lookup[liker.id]) {
+          liked.lookup[liker.id].totalLikedBack += 1;
+        } else {
+          liker.totalLiked = 0;
+          liker.totalLikedBack = 1;
+          liked.lookup[liker.id] = liker;
+        }
+      });
+    });
+
+    return data;
   }
 
   var incrementLikedCount = function(data) {
@@ -94,28 +82,13 @@
     photos.forEach(function(photo) {
       var lookup = liked.lookup;
       var user = photo.user;
-
+      
       user.totalLiked = lookup[user.id] ? lookup[user.id].totalLiked += 1 : 1;
       user.totalLikedBack = 0;
-
       lookup[user.id] = user;
     });
-  }
 
-  var incrementLikedBackCount = function(data) {
-    console.log("incrementLikedBackCount");
-
-    var likers = data.data;
-
-    likers.forEach(function(liker, i) {
-      if (liked.lookup[liker.id]) {
-        liked.lookup[liker.id].totalLikedBack += 1;
-      } else {
-        liker.totalLiked = 0;
-        liker.totalLikedBack = 1;
-        liked.lookup[liker.id] = liker;
-      }
-    });
+    return data;
   }
 
   var sortLiked = function() {
@@ -151,42 +124,79 @@
       html += "<div class='img-cont'><img " + dataId + " " + src + " " + alt + " " + title + "></div>";
     });
 
-    $(".liked").html(html);
+    $(".liked-grid").html(html);
     $(".img-cont").addClass("animated fadeIn");
   }
 
-  $(".liked").on("click", "img", function(evt) {
-    var userId = $(this).attr("data-id"); 
-    var username = liked.lookup[userId].username;
-    var totalLiked = liked.lookup[userId].totalLiked;
-    var totalLikedBack  = liked.lookup[userId].totalLikedBack;
+  var getRecent = function(url) {
+    console.log("getRecent")
+    instagramRequest(url)
+    .then(getMedia)
+    .then(incrementLikedBackCount)
+    .then(function(data) {
+      var nextUrl = data.next_url;
+      
+      getRecent(nextUrl);
+    })
+    .catch(function() {
+      $("#overlay").modal("hide")
+      console.log("done!", liked)
+    });
+  }
 
-    
-    var base = totalLiked + totalLikedBack;
-    var likedRate = Math.round((totalLiked / base) * 100) + "%"; 
-    var likedBackRate = Math.round((totalLikedBack / base) * 100) + "%";
+  var getLiked = function(url) {
+    console.log('getLiked')
+    instagramRequest(url)
+    .then(incrementLikedCount)
+    .then(function(data) {
+      var nextUrl = data.pagination.next_url;
+      
+      getLiked(nextUrl);
+    })
+    .catch(function() {
+      $("#overlay h1").text("Almost there...")
+      sortLiked();
+      addLikedToDom();
 
-    var pluralLiked = totalLiked === 1 ? "s" : "";
-    var pluralLikedBack = totalLikedBack === 1 ? "s" : "";
-
-    $(".progress-bar-success").css("width", likedRate);
-    $(".progress-bar-danger").css("width", likedBackRate);
-
-    $(".progress-bar-success").text("You've liked " + username + "<strong>" + totalLiked + "</strong>time" + pluralLiked);
-    $(".progress-bar-danger").text(username + " has liked you <strong>" + totalLikedBack + "</strong>time" + pluralLikedBack);
-  });
-
-  var getLiked = function() {
-    getMedia(likedEndpoint, likedCb);
+      recentEndpoint += accessToken;
+      getRecent(recentEndpoint);
+    });
   }
 
   var authInstagram = function() {
     if (window.location.hash) {
       accessToken = window.location.hash.substr(1);
       likedEndpoint += accessToken;
-      getLiked();
+      getLiked(likedEndpoint);
     }
   }
 
+  var clickHandler = function(evt) {
+    console.log('click', evt)
+    var userId = $(this).attr("data-id");
+    var user = liked.lookup[userId];
+    
+    var base = user.totalLiked + user.totalLikedBack;
+    var likedRate = Math.round((user.totalLiked / base) * 100) + "%"; 
+    var likedBackRate = Math.round((user.totalLikedBack / base) * 100) + "%";
+
+    $(".total-likes p").text(base);
+    $(".your-likes p").text(user.totalLiked);
+    $(".their-likes p").text(user.totalLikedBack);
+    $(".their-likes h2").text(user.username + " Likes");
+
+    $(".progress-bar-success").css("width", likedRate);
+    $(".progress-bar-danger").css("width", likedBackRate);
+  };
+
   window.onhashchange = authInstagram();
+  $(".liked-grid").on("click", "img", clickHandler);
+
+  if (window.location.hash) {
+    accessToken = window.location.hash.substr(1);
+    initMainElements();
+  } else {
+    window.location.hash = " ";
+    $(".marketing").addClass("animated fadeIn");
+  }
 })();

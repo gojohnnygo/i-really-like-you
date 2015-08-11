@@ -27,7 +27,6 @@ body {
 
 /* Custom page header */
 .header {
-  border-bottom: 1px solid #e5e5e5;
   opacity: 0;
 
   /* Make the masthead heading the same height as the navigation */
@@ -43,8 +42,6 @@ body {
 .footer {
   padding-top: 19px;
   color: #777;
-  // border-top: 1px solid #e5e5e5;
-  text-align: center;
   margin-top: 15px;
 }
 
@@ -55,8 +52,6 @@ body {
 /* Main marketing message and sign up button */
 .jumbotron {
   background-color: white;
-  text-align: center;
-  //border-bottom: 1px solid #e5e5e5;
   margin-bottom: 0;
 
   .btn {
@@ -68,8 +63,23 @@ body {
 /* Supporting marketing content */
 .marketing {
   margin: 40px 0;
+  
   p + h4 {
     margin-top: 28px;
+  }
+
+  .instructions {
+    margin: 0 auto;
+    text-align: center;
+    list-style-position: inside;
+    
+    .lead {
+      margin-bottom: 0;
+    }
+
+    ol {
+      padding-left: 0;
+    }
   }
 }
 
@@ -98,20 +108,6 @@ body {
   }
 }
 
-.instructions {
-  margin: 0 auto;
-  text-align: center;
-  list-style-position: inside;
-  
-  .lead {
-    margin-bottom: 0;
-  }
-
-  ol {
-    padding-left: 0;
-  }
-}
-
 .img-cont {
   height: 75px;
   width: 75px;
@@ -131,23 +127,13 @@ body {
   }
 }
 
-.marketing {
+.dashboard {
   opacity: 0;
 }
 
 .removed {
   display: none;
 }
-
-.main {
-  opacity: 0;
-}
-
-// #fixed {
-//   position: fixed;
-//   top: 10px;
-//   left: 0;
-// }
 
 // * {
 //   margin: 0;
@@ -168,4 +154,15 @@ body {
 //   height: 50px; 
 // }
 
-.fixedsticky { top: 10px; }
+.center {
+  text-align: center;
+}
+
+.total-likes {
+  padding: 19px;
+}
+
+#overlay {
+  color: #e5e5e5;
+  text-shadow: 0px 1px 1px #555;
+}

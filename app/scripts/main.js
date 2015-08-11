@@ -186,7 +186,7 @@
     $('.main').toggleClass('removed');
 
     $('.dashboard').toggleClass('removed').addClass('animated fadeIn');
-    $('.header').addClass('animated fadeIn');
+    $('.header').toggleClass('removed').addClass('animated fadeIn');
   };
 
   /*

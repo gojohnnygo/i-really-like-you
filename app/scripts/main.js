@@ -69,8 +69,8 @@
 
   /*
   Count all likers for the auth-ed user by media. This requires an
-  API call for each medium. Note, this is step 2 of 2. To get total 
-  liker count, the first step is to get media IDs. Then a separate 
+  API call for each medium. Note, this is step 2 of 2. To get total
+  liker count, the first step is to get media IDs. Then a separate
   call is need to get all likers for each medium.
    */
   var incrementLikedBackCount = function(data) {

@@ -1,7 +1,7 @@
 'use strict';
 
 // wrap code in IIFE keep global space un-polluted
-(function() {
+(function($) {
   var likedEndpoint = 'https://api.instagram.com/v1/users/self/media/liked?';
   var recentEndpoint = 'https://api.instagram.com/v1/users/self/media/recent/?';
   var mediaEndpoint = 'https://api.instagram.com/v1/media/';
@@ -225,9 +225,9 @@
   };
 
   var affixHandler = function() {
-    var dashboardWrapperWidth = $(".dashboard-wrapper").width();
+    var dashboardWrapperWidth = $('.dashboard-wrapper').width();
     var dashboardHeight = $('.dashboard').height();
-    
+
     $('.dashboard').width(dashboardWrapperWidth);
     $('.dashboard-wrapper').height(dashboardHeight);
   };
@@ -237,7 +237,7 @@
    */
   $('.liked-grid').on('click', 'img', clickHandler);
 
-  /* 
+  /*
   Event listener to resize "stuck" dashboard
   */
   $(window).resize(affixHandler);
@@ -251,7 +251,7 @@
   Detect URL hash change. This identifies Instagram auth.
    */
   window.onhashchange = authInstagram();
-    
+
   /*
   Check URL to see if user is already authenticated.
    */
@@ -270,4 +270,4 @@
   $('.dashboard').affix({
     offset: {top: $('.dashboard').offset().top}
   });
-})();
+})(window.jQuery);

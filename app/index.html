@@ -48,7 +48,8 @@
             <h1> I Really Like You</h1>
             <p class="lead">Are your Instagram likes unrequited? </br> Log in to find out!</p>
             <p>
-              <a class="btn btn-lg btn-success ig-log-in" href="https://instagram.com/oauth/authorize/?client_id=417481bcd3c54c3c9a7d410d280ced3a&redirect_uri=http%3A%2F%2Fgojohnnygo.github.io%2Fi-really-like-you%2F%23&response_type=token">Log in with Instagram</a>
+              <!-- <a class="btn btn-lg btn-success ig-log-in" href="https://instagram.com/oauth/authorize/?client_id=417481bcd3c54c3c9a7d410d280ced3a&redirect_uri=http%3A%2F%2Fgojohnnygo.github.io%2Fi-really-like-you%2F%23&response_type=token">Log in with Instagram</a> -->
+              <a class="btn btn-lg btn-success ig-log-in" href="https://instagram.com/oauth/authorize/?client_id=57d293f5c67e40e0a4189edc520fb03e&redirect_uri=http://localhost:9000&response_type=token">Log in with Instagram</a>
             </p>
           </div>
           <div class="instructions">
@@ -62,42 +63,44 @@
         </div>
       </div>
 
-      <div class="row dashboard removed">
-        <div class="col-sm-4">
-          <div class="well center your-likes">
-            <h2>Your Likes</h2>
-            <p class="lead">-</p>
-          </div> 
-        </div>
-        <div class="col-sm-4 center total-likes">
-          <h2>Total Likes</h2>
-          <p class="lead">-</p>
-        </div>
-        <div class="col-sm-4 center their-likes">
-          <div class="well">
-            <h2>Their Likes</h2>
-            <p class="lead">-</p>
-          </div> 
-        </div>
-      </div>
+      <div class="dashboard-wrapper">
+        <div class="dashboard removed">
+          <div class="row">
+            <div class="col-sm-4">
+              <div class="well center your-likes">
+                <h2>Your Likes</h2>
+                <p class="lead">-</p>
+              </div> 
+            </div>
+            <div class="col-sm-4 center total-likes">
+              <h2>Total Likes</h2>
+              <p class="lead">-</p>
+            </div>
+            <div class="col-sm-4 center their-likes">
+              <div class="well">
+                <h2>Their Likes</h2>
+                <p class="lead">-</p>
+              </div> 
+            </div>
+          </div>
 
-      <div class="row dashboard removed">
-        <div class="col-sm-12">
-          <div class="progress">
-            <div class="progress-bar progress-bar-success"></div>
-            <div class="progress-bar progress-bar-danger"></div>
+          <div class="row">
+            <div class="col-sm-12">
+              <div class="progress">
+                <div class="progress-bar progress-bar-success"></div>
+                <div class="progress-bar progress-bar-danger"></div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
-      <div class="row dashboard removed">
-        <div class="col-sm-12 liked-grid">
-        </div>
+      <div class="row">
+        <div class="col-sm-12 liked-grid removed"></div>
       </div>
-    </div>
-
-    <div class="footer center">
-      Designed and built by <a href="http://twitter.com">@gojohnnygo</a>.
+      <div class="footer center">
+        Designed and built by <a href="http://twitter.com/gojohnnygo">@gojohnnygo</a>.
+      </div>      
     </div>
 
     <!-- build:js scripts/vendor.js -->
@@ -107,7 +110,9 @@
     <!-- endbuild -->
     
     <!-- build:js scripts/plugins.js -->
+    <script src="/bower_components/bootstrap-sass/assets/javascripts/bootstrap/affix.js"></script>
     <script src="/bower_components/bootstrap-sass/assets/javascripts/bootstrap/modal.js"></script>
+
     <!-- endbuild -->
     
     <!-- build:js scripts/main.js -->

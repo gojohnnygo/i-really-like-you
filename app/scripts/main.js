@@ -170,6 +170,7 @@
       $('#overlay h1').text('Almost there...');
       sortLiked();
       addLikedToDom();
+      affixHandler();
 
       recentEndpoint += accessToken;
       getRecent(recentEndpoint);
@@ -186,7 +187,9 @@
     $('.main').toggleClass('removed');
 
     $('.dashboard').toggleClass('removed').addClass('animated fadeIn');
+    $('.liked-grid').toggleClass('removed').addClass('animated fadeIn');
     $('.header').toggleClass('removed').addClass('animated fadeIn');
+    $('.footer').addClass('animated fadeIn');
   };
 
   /*
@@ -221,16 +224,34 @@
     $('.progress-bar-danger').css('width', likedBackRate);
   };
 
-  /*
-  Detect URL hash change. This identifies Instagram auth.
-   */
-  window.onhashchange = authInstagram();
+  var affixHandler = function() {
+    var dashboardWrapperWidth = $(".dashboard-wrapper").width();
+    var dashboardHeight = $('.dashboard').height();
+    
+    $('.dashboard').width(dashboardWrapperWidth);
+    $('.dashboard-wrapper').height(dashboardHeight);
+  };
 
   /*
   Event listener for dashboard clicks.
    */
   $('.liked-grid').on('click', 'img', clickHandler);
 
+  /* 
+  Event listener to resize "stuck" dashboard
+  */
+  $(window).resize(affixHandler);
+
+  /*
+  Event lisntener for when dashboard gets "stuck"
+   */
+  $('.dashboard').on('affix.bs.affix', affixHandler);
+
+  /*
+  Detect URL hash change. This identifies Instagram auth.
+   */
+  window.onhashchange = authInstagram();
+    
   /*
   Check URL to see if user is already authenticated.
    */
@@ -240,5 +261,13 @@
   } else {
     window.location.hash = ' ';
     $('.marketing').addClass('animated fadeIn');
+    $('.footer').addClass('animated fadeIn');
   }
+
+  /*
+  Add affix attributes for "sticky" dashboard
+   */
+  $('.dashboard').affix({
+    offset: {top: $('.dashboard').offset().top}
+  });
 })();
